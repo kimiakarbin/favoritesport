@@ -2,12 +2,24 @@ import React, { useState } from 'react';
 
 function App() {
     const [sportName, setSportName] = useState('');
+
     const [sportPoint, setSportPoint] = useState('');
+
+    const [search, setSearch] = useState('');
+
+    const [show, setShow] = useState(false);
+
     const [list, setList] = useState([
         {
             id: 1,
+
             sportName: 'football',
             sportPoint: 5,
+        },
+        {
+            id: 2,
+            sportName: 'vollyball',
+            sportPoint: 4,
         },
     ]);
 
@@ -22,13 +34,22 @@ function App() {
     };
 
     list.filter((item) => item);
-    const deletelist = (id) => {
-        setList(list.filter((item) => item.id !== id));
+    const deletelist = (sportName) => {
+        setList(list.filter((item) => item.sportName !== sportName));
+    };
+
+    list.filter((item) => item);
+
+    const deleteAll = (id) => {
+        setList(list.filter((item) => item.id === id));
+        setSearch('');
+        setShow(true);
     };
 
     const onClear = () => {
         setSportName('');
         setSportPoint('');
+        setShow(false);
     };
 
     return (
@@ -48,7 +69,6 @@ function App() {
                         onChange={(event) => setSportName(event.target.value)}
                         type="text"
                         placeholder="sportName"
-                        style={{}}
                     />
                 </div>
                 <div>
@@ -69,9 +89,12 @@ function App() {
             <table>
                 <thead>
                     <th>sportName </th>
+
                     <th>sportPoint </th>
+
                     <th>delete </th>
-                    <th>edit</th>
+
+                    <th>edit </th>
                 </thead>
             </table>
             {list.map((item) => {
@@ -80,18 +103,57 @@ function App() {
                         <tbody>
                             <td>{item.sportName}</td>
                             <td> {item.sportPoint}</td>
+
                             <td>
-                                <button onClick={() => deletelist(item.id)}>
+                                <button
+                                    onClick={() => deletelist(item.sportName)}
+                                >
                                     delete
                                 </button>
                             </td>
+
                             <td>
                                 <button>edit</button>
                             </td>
                         </tbody>
                     </table>
                 );
-            })}
+            })}{' '}
+            <input
+                type="text"
+                placeholder="search..."
+                onChange={(event) => {
+                    setSearch(event.target.value);
+                }}
+            ></input>
+            {list
+                .filter((val) => {
+                    if (search === '') {
+                        return val;
+                    } else if (
+                        val.sportName
+
+                            .toLocaleLowerCase()
+                            .includes(search.toLocaleLowerCase())
+                    ) {
+                        return val;
+                    }
+                    return 0;
+                })
+                .map((val) => {
+                    return (
+                        <p>
+                            {val.sportName}
+                            &nbsp; &nbsp;
+                            {val.sportPoint}
+                        </p>
+                    );
+                })}
+            ;
+            <div>
+                <button onClick={deleteAll}> Delete All </button>
+                {show && <p>no data to show!</p>}
+            </div>
         </div>
     );
 }
